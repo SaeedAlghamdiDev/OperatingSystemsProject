@@ -1,0 +1,4 @@
+Process Name, Arrival Time, Burst Time, Quantum-Time (0 if null) (All units in seconds)
+1, 0, 20, 0,
+2, 0, 10, 0,
+3, 4, 8, 0
