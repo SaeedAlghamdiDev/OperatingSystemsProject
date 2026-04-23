@@ -24,6 +24,12 @@ function CPUSchedulingAlgorithmInput(){
     for(let i = 1; i < numberOfTasks + 1; i++){
         items.push(<TaskDataInput name = {i} quantum = {true}/>)
     }
+
+    const collectData = (event) => {
+
+        
+
+    }
     
 
     
