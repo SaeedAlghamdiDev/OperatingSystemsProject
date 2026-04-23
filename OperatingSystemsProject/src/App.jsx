@@ -1,9 +1,12 @@
-
+import CPUSchedulingAlgorithmInput from "./CPUSchedulingAlgorithmInput";
 
 function app(){
 
 
-  return("Hello");
+  return(<>
+  "Hello"
+  <CPUSchedulingAlgorithmInput/>
+  </>);
 }
 
 export default app
