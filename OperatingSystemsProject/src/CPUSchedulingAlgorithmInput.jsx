@@ -32,6 +32,9 @@ function CPUSchedulingAlgorithmInput(){
         
     }
 
+    const calculateRequest = () => {
+        alert("arrival time * burst time = " + listOfTasks.at(1).TaskBurstTime * listOfTasks.at(1).TaskArrivalTime)
+    }
 
     const removeTask = (index) =>{
 
@@ -103,7 +106,7 @@ function CPUSchedulingAlgorithmInput(){
 
 
     <div>
-        {/* <button onClick={CalculateRequest}>Calculate</button> */}
+        <button onClick={calculateRequest}>Calculate</button>
     </div>
 
         
