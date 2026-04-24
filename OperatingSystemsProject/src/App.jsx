@@ -1,4 +1,6 @@
 import CPUSchedulingAlgorithmInput from "./CPUSchedulingAlgorithmInput";
+import Footer from "./Footer";
+
 
 function app(){
 
@@ -6,6 +8,7 @@ function app(){
   return(<>
   "Hello"
   <CPUSchedulingAlgorithmInput/>
+  <Footer/>
   </>);
 }
 
