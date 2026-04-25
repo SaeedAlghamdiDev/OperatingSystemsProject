@@ -12,7 +12,7 @@ function CPUSchedulingAlgorithmInput(){
     const [quantumTime, setQuantumTime] = useState(0);
     const [taskData, setTaskData] = useState([]);
 
-    let quantum = false;
+    let quantum = true;
     
 
     const addTask = () => {
@@ -110,18 +110,7 @@ function CPUSchedulingAlgorithmInput(){
         }
         alert("Average Wait Time: " + averageWaitTime);
         setTaskData(tempTaskData);
-        
-        
-
-
-        
-
-
-
-        
-        
-        
-
+   
     }
     
 
