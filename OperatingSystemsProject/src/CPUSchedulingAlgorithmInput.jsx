@@ -55,6 +55,27 @@ function CPUSchedulingAlgorithmInput(){
 
         return taskIndex;
     }
+
+    function whoIsShortest(tempTasks){
+
+        let time = 99999999;
+        let taskIndex;
+        for (let i = 0; i < tempTasks.length; i++){
+
+            if (tempTasks.at(i).TaskBurstTime < first){
+
+                time = tempTasks.at(i).TaskBurstTime;
+                taskIndex = i;
+
+            }
+
+            
+        }
+
+        return taskIndex;
+    }
+
+    
     const calculateFCFS = () => {
         
         let tempTaskData = [];            //Processed task data that gets moved to global Task Data
@@ -68,7 +89,11 @@ function CPUSchedulingAlgorithmInput(){
         while(tempTasks.length > 0){
         currentIndex = whoCameFirst(tempTasks);
         
-        totalTime += tempTasks.at(currentIndex).TaskBurstTime;
+        if (tempTasks.at(currentIndex).TaskArrivalTime > totalTime) {    //This lets totalTime take idle time into account.
+             totalTime = tempTasks.at(currentIndex).TaskArrivalTime;
+                }
+             totalTime += tempTasks.at(currentIndex).TaskBurstTime;
+
         tempTaskData.push({taskIndex: tempTasks.at(currentIndex).TaskName,
                        arrivalTime: tempTasks.at(currentIndex).TaskArrivalTime,
                        finishTime: totalTime,
@@ -95,11 +120,9 @@ function CPUSchedulingAlgorithmInput(){
 
         
         
-        // alert("arrival time * burst time = " + listOfTasks.at(1).TaskBurstTime * listOfTasks.at(1).TaskArrivalTime)
-    
-        // for(let i =0; i < listOfTasks.length; i++){
+        
 
-        }
+    }
     
 
     const removeTask = (index) =>{

@@ -8,7 +8,7 @@ function app(){
   return(<>
   "Hello"
   <CPUSchedulingAlgorithmInput/>
-  <Footer/>
+  {/* <Footer/> */}
   </>);
 }
 

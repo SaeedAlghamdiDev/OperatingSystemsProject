@@ -23,6 +23,8 @@ function TaskDataInput(props){
             setQuantumTime(parseInt(event.target.value));
             
     }
+    
+    let taskObject = {id: props.name, AT: arrivalTime }
 
     return(<>
     <div>
