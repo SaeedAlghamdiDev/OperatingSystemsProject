@@ -5,14 +5,14 @@ import {useState} from "react";
 function CPUSchedulingAlgorithmInput(){
     
 
-    const [numberOfTasks, setNumberOfTasks] = useState(0);
+    // const [numberOfTasks, setNumberOfTasks] = useState(0);
     const [listOfTasks, setListOfTasks] = useState([]);
     const [arrivalTime, setArrivalTime] = useState(0);
     const [burstTime, setBurstTime] = useState(0);
     const [quantumTime, setQuantumTime] = useState(0);
 
     let quantum = true;
-
+    
 
     const addTask = () => {
 
@@ -32,9 +32,39 @@ function CPUSchedulingAlgorithmInput(){
         
     }
 
-    const calculateRequest = () => {
-        alert("arrival time * burst time = " + listOfTasks.at(1).TaskBurstTime * listOfTasks.at(1).TaskArrivalTime)
+
+    function whoCameFirst(){
+
+        let first = 99999999;
+        let taskIndex;
+        for (let i = 0; i < listOfTasks.length; i++){
+
+            if (listOfTasks.at(i).TaskArrivalTime < first){
+
+                first = listOfTasks.at(i).TaskArrivalTime;
+                taskIndex = i;
+
+            }
+
+            console.log(i);
+        }
+
+        return taskIndex;
     }
+    const calculateFCFS = () => {
+        
+
+
+        alert(whoCameFirst());
+
+        
+        
+        // alert("arrival time * burst time = " + listOfTasks.at(1).TaskBurstTime * listOfTasks.at(1).TaskArrivalTime)
+    
+        // for(let i =0; i < listOfTasks.length; i++){
+
+        }
+    
 
     const removeTask = (index) =>{
 
@@ -96,23 +126,23 @@ function CPUSchedulingAlgorithmInput(){
     </div>
         
         <div>Added Tasks: <br/>
-        <uo>
+        <ul>
             {listOfTasks.map((listOfTasks, index)=>
                  <li key={index} onClick={() => removeTask(index)}>
                      Task: {index + 1} Arrival Time: {listOfTasks.TaskArrivalTime}s Burst Time: {listOfTasks.TaskBurstTime}s  </li>)}
-        </uo>
+        </ul>
 
     </div>
 
 
     <div>
-        <button onClick={calculateRequest}>Calculate</button>
+        <button onClick={calculateFCFS}>Calculate</button>
     </div>
 
+                  
         
 
     </>)
-
 }
 
 export default CPUSchedulingAlgorithmInput
