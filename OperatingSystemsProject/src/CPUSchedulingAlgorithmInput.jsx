@@ -11,7 +11,9 @@ function CPUSchedulingAlgorithmInput(){
     const [burstTime, setBurstTime] = useState(0);
     const [quantumTime, setQuantumTime] = useState(0);
     const [taskData, setTaskData] = useState([]);
+    const [averageWaitTime, setAverageWaitTime] = useState(0);
 
+    
     let quantum = true;
     
 
@@ -56,13 +58,13 @@ function CPUSchedulingAlgorithmInput(){
         return taskIndex;
     }
 
-    function whoIsShortest(tempTasks){
+    function whoIsShortest(tempTasks, totalTime){
 
         let time = 99999999;
         let taskIndex;
         for (let i = 0; i < tempTasks.length; i++){
 
-            if (tempTasks.at(i).TaskBurstTime < first){
+            if (tempTasks.at(i).TaskBurstTime < time && totalTime >= tempTasks.at(i).TaskArrivalTime){
 
                 time = tempTasks.at(i).TaskBurstTime;
                 taskIndex = i;
@@ -75,7 +77,85 @@ function CPUSchedulingAlgorithmInput(){
         return taskIndex;
     }
 
-    
+    const calculateSRTF = (tempTasks, totalTime) => {
+
+
+
+
+
+    }
+
+    const calculateRR = () => {
+        let tempTaskData = [];            //Processed task data that gets moved to global Task Data
+        let tempTasks = [...listOfTasks]; //an array to hold data without changing the original
+        let totalTime = 0;
+        
+        let currentIndex;
+
+        let timeQuantum = tempTasks.at(0).TaskQuantumTime;
+        
+
+
+        let averageWaitTime = 0;
+        
+
+        while(tempTasks.length > 0){
+        currentIndex = whoCameFirst(tempTasks);
+        
+        if (tempTasks.at(currentIndex).TaskArrivalTime > totalTime) {    //This lets totalTime take idle time into account.
+             totalTime = tempTasks.at(currentIndex).TaskArrivalTime;
+                }
+             totalTime += tempTasks.at(currentIndex).TaskBurstTime;
+
+             
+        tempTaskData.push({taskIndex: tempTasks.at(currentIndex).TaskName,
+                       arrivalTime: tempTasks.at(currentIndex).TaskArrivalTime,
+                       finishTime: totalTime,
+                       startTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime,
+                       waitTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime - tempTasks.at(currentIndex).TaskArrivalTime,
+                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime})
+        tempTasks.splice(currentIndex, 1);
+        }
+
+        
+    }
+
+    const calculatenSJF = () =>{
+        let tempTaskData = [];            //Processed task data that gets moved to global Task Data
+        let tempTasks = [...listOfTasks]; //an array to hold data without changing the original
+        let totalTime = 0;
+        let currentIndex;
+        
+        let averageWaitTime = 0;
+
+        
+
+        while(tempTasks.length > 0){
+        currentIndex = whoIsShortest(tempTasks, totalTime);
+        
+        if (tempTasks.at(currentIndex).TaskArrivalTime > totalTime) {    //This lets totalTime take idle time into account.
+             totalTime = tempTasks.at(currentIndex).TaskArrivalTime;
+                }
+             totalTime += tempTasks.at(currentIndex).TaskBurstTime;
+
+        tempTaskData.push({taskIndex: tempTasks.at(currentIndex).TaskName,
+                       arrivalTime: tempTasks.at(currentIndex).TaskArrivalTime,
+                       finishTime: totalTime,
+                       startTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime,
+                       waitTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime - tempTasks.at(currentIndex).TaskArrivalTime,
+                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime})
+        tempTasks.splice(currentIndex, 1);
+        }
+
+
+
+        for (let i = 0; i < tempTaskData.length; i++){
+            averageWaitTime += tempTaskData.at(i).waitTime/tempTaskData.length;
+        }
+        setAverageWaitTime(averageWaitTime);
+        setTaskData(tempTaskData);
+
+    }
     const calculateFCFS = () => {
         
         let tempTaskData = [];            //Processed task data that gets moved to global Task Data
@@ -108,7 +188,7 @@ function CPUSchedulingAlgorithmInput(){
         for (let i = 0; i < tempTaskData.length; i++){
             averageWaitTime += tempTaskData.at(i).waitTime/tempTaskData.length;
         }
-        alert("Average Wait Time: " + averageWaitTime);
+        setAverageWaitTime(averageWaitTime);
         setTaskData(tempTaskData);
    
     }
@@ -209,17 +289,29 @@ function CPUSchedulingAlgorithmInput(){
 
 
     <div>
-        <button onClick={calculateFCFS}>Calculate</button>
+        <button onClick={calculateFCFS}>Calculate FCFS</button>
+        <button onClick={calculatenSJF}>Calculate nSJF</button>
+        <button onClick={calculateRR}>Calculate RR</button>
+        
     </div>
 
 
                 
                   <div>Task Wait Times:
-                    <ul>
+                    {/* <ul>
                         {taskData.map((taskData, index) => <li key ={index} >
                             Task {taskData.taskIndex + 1}, Arrival Time: {taskData.arrivalTime}s, Start Time: {taskData.startTime}s, Finish Time: {taskData.finishTime}s, Wait Time: {taskData.waitTime}s, Turn-Around Time: {taskData.turnAroundTime}s
                         </li>)} <br/> 
+                    </ul> */}
+
+                    <ul>
+                        {taskData.map((taskData, index) => <li key ={index} >
+                            Task {taskData.taskIndex + 1}, Arrival Time: {taskData.arrivalTime}s, Burst Time: {taskData.burstTime}s, Finish Time: {taskData.finishTime}s, Turn-Around Time: {taskData.turnAroundTime}s, Wait Time: {taskData.waitTime}s,
+                        </li>)} <br/> 
                     </ul>
+
+                        Average Wait Time: {averageWaitTime}
+
                   </div>
         
 
