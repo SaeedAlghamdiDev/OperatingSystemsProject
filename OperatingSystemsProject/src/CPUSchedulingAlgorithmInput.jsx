@@ -10,18 +10,22 @@ function CPUSchedulingAlgorithmInput(){
     const [arrivalTime, setArrivalTime] = useState(0);
     const [burstTime, setBurstTime] = useState(0);
     const [quantumTime, setQuantumTime] = useState(0);
+    const [taskData, setTaskData] = useState([]);
 
-    let quantum = true;
+    let quantum = false;
     
 
     const addTask = () => {
 
         let newTask = null;
-        quantum?  newTask = {TaskArrivalTime: arrivalTime,
+        quantum?  newTask = {     TaskName: listOfTasks.length,
+                                  TaskArrivalTime: arrivalTime,
                                   TaskBurstTime:burstTime,
                                   TaskQuantumTime:quantumTime}
                                   :
-                  newTask = {TaskArrivalTime: arrivalTime,
+                  newTask = {
+                                  TaskName: listOfTasks.length,
+                                  TaskArrivalTime: arrivalTime,
                                   TaskBurstTime:burstTime};
 
         setListOfTasks(l => [...l, newTask]);
@@ -33,29 +37,61 @@ function CPUSchedulingAlgorithmInput(){
     }
 
 
-    function whoCameFirst(){
+    function whoCameFirst(tempTasks){ //Function to determine who goes first 
 
         let first = 99999999;
         let taskIndex;
-        for (let i = 0; i < listOfTasks.length; i++){
+        for (let i = 0; i < tempTasks.length; i++){
 
-            if (listOfTasks.at(i).TaskArrivalTime < first){
+            if (tempTasks.at(i).TaskArrivalTime < first){
 
-                first = listOfTasks.at(i).TaskArrivalTime;
+                first = tempTasks.at(i).TaskArrivalTime;
                 taskIndex = i;
 
             }
 
-            console.log(i);
+            
         }
 
         return taskIndex;
     }
     const calculateFCFS = () => {
         
+        let tempTaskData = [];            //Processed task data that gets moved to global Task Data
+        let tempTasks = [...listOfTasks]; //an array to hold data without changing the original
+        let totalTime = 0;
+        let currentIndex;
+        
+        let averageWaitTime = 0;
+        
+
+        while(tempTasks.length > 0){
+        currentIndex = whoCameFirst(tempTasks);
+        
+        totalTime += tempTasks.at(currentIndex).TaskBurstTime;
+        tempTaskData.push({taskIndex: tempTasks.at(currentIndex).TaskName,
+                       arrivalTime: tempTasks.at(currentIndex).TaskArrivalTime,
+                       finishTime: totalTime,
+                       startTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime,
+                       waitTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime - tempTasks.at(currentIndex).TaskArrivalTime,
+                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime})
+        tempTasks.splice(currentIndex, 1);
+        }
 
 
-        alert(whoCameFirst());
+
+        for (let i = 0; i < tempTaskData.length; i++){
+            averageWaitTime += tempTaskData.at(i).waitTime/tempTaskData.length;
+        }
+        alert("Average Wait Time: " + averageWaitTime);
+        setTaskData(tempTaskData);
+        
+        
+
+
+        
+
+
 
         
         
@@ -72,17 +108,42 @@ function CPUSchedulingAlgorithmInput(){
     }
     const handleArrivalTimeChange = (event) => {
             
+        if(event.target.value < 0){
+            setArrivalTime(0);
+        } else if (event.target.value > 1000) {
+            setArrivalTime(1000);
+        } 
+        else {
             setArrivalTime(parseInt(event.target.value));
+        }
+            
             
     }
     const handleBurstTimeChange = (event) => {
             
+
+        if(event.target.value < 1){
+            setBurstTime(1);
+        } else if (event.target.value > 1000) {
+            setBurstTime(1000);
+        } 
+        else {
             setBurstTime(parseInt(event.target.value));
+        }
+            
             
     }
     const handleQuantumTimeChange = (event) => {
             
+        if(event.target.value < 0){
+            setQuantumTime(0);
+        } else if (event.target.value > 1000) {
+            setQuantumTime(1000);
+        } 
+        else {
             setQuantumTime(parseInt(event.target.value));
+        }
+            
             
     }
 
@@ -139,7 +200,15 @@ function CPUSchedulingAlgorithmInput(){
         <button onClick={calculateFCFS}>Calculate</button>
     </div>
 
-                  
+
+                
+                  <div>Task Wait Times:
+                    <ul>
+                        {taskData.map((taskData, index) => <li key ={index} >
+                            Task {taskData.taskIndex + 1}, Arrival Time: {taskData.arrivalTime}s, Start Time: {taskData.startTime}s, Finish Time: {taskData.finishTime}s, Wait Time: {taskData.waitTime}s, Turn-Around Time: {taskData.turnAroundTime}s
+                        </li>)} <br/> 
+                    </ul>
+                  </div>
         
 
     </>)
