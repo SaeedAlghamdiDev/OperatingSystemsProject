@@ -86,39 +86,77 @@ function CPUSchedulingAlgorithmInput(){
     }
 
     const calculateRR = () => {
-        let tempTaskData = [];            //Processed task data that gets moved to global Task Data
-        let tempTasks = [...listOfTasks]; //an array to hold data without changing the original
-        let totalTime = 0;
-        
-        let currentIndex;
 
-        let timeQuantum = tempTasks.at(0).TaskQuantumTime;
-        
+    let tempTasks = listOfTasks.map(t => ({
+        ...t,
+        remainingTime: t.TaskBurstTime,
+        finishTime: 0
+    }));
 
+    let readyQueue = [];
+    let totalTime = 0;
+    let tempTaskData = [];
+    let averageWaitTime = 0;
 
-        let averageWaitTime = 0;
-        
+    // sort by arrival time, then by TaskName (tie-breaker)
+    tempTasks.sort((a, b) => 
+        a.TaskArrivalTime - b.TaskArrivalTime || a.TaskName - b.TaskName
+    );
 
-        while(tempTasks.length > 0){
-        currentIndex = whoCameFirst(tempTasks);
-        
-        if (tempTasks.at(currentIndex).TaskArrivalTime > totalTime) {    //This lets totalTime take idle time into account.
-             totalTime = tempTasks.at(currentIndex).TaskArrivalTime;
-                }
-             totalTime += tempTasks.at(currentIndex).TaskBurstTime;
+    let i = 0; // pointer for arrivals
 
-             
-        tempTaskData.push({taskIndex: tempTasks.at(currentIndex).TaskName,
-                       arrivalTime: tempTasks.at(currentIndex).TaskArrivalTime,
-                       finishTime: totalTime,
-                       startTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime,
-                       waitTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime - tempTasks.at(currentIndex).TaskArrivalTime,
-                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime})
-        tempTasks.splice(currentIndex, 1);
+    while (readyQueue.length > 0 || i < tempTasks.length) {
+
+        // if queue empty, jump to next arrival
+        if (readyQueue.length === 0) {
+            totalTime = tempTasks[i].TaskArrivalTime;
+            readyQueue.push(tempTasks[i]);
+            i++;
         }
 
-        
+        let current = readyQueue.shift();
+
+        // execute for quantum or remaining time
+        let execTime = Math.min(current.remainingTime, quantumTime);
+        totalTime += execTime;
+        current.remainingTime -= execTime;
+
+        // add newly arrived tasks FIRST
+        while (i < tempTasks.length && tempTasks[i].TaskArrivalTime <= totalTime) {
+            readyQueue.push(tempTasks[i]);
+            i++;
+        }
+
+        // if not finished, requeue
+        if (current.remainingTime > 0) {
+            readyQueue.push(current);
+        } else {
+            current.finishTime = totalTime;
+
+            let turnAroundTime = current.finishTime - current.TaskArrivalTime;
+            let waitTime = turnAroundTime - current.TaskBurstTime;
+
+            tempTaskData.push({
+                taskIndex: current.TaskName,
+                arrivalTime: current.TaskArrivalTime,
+                finishTime: current.finishTime,
+                waitTime: waitTime,
+                turnAroundTime: turnAroundTime,
+                burstTime: current.TaskBurstTime
+            });
+        }
     }
+
+    // sort back by task index for display
+    tempTaskData.sort((a, b) => a.taskIndex - b.taskIndex);
+
+    for (let j = 0; j < tempTaskData.length; j++) {
+        averageWaitTime += tempTaskData[j].waitTime / tempTaskData.length;
+    }
+
+    setAverageWaitTime(averageWaitTime);
+    setTaskData(tempTaskData);
+}
 
     const calculatenSJF = () =>{
         let tempTaskData = [];            //Processed task data that gets moved to global Task Data
@@ -143,7 +181,8 @@ function CPUSchedulingAlgorithmInput(){
                        finishTime: totalTime,
                        startTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime,
                        waitTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime - tempTasks.at(currentIndex).TaskArrivalTime,
-                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime})
+                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime,
+                       burstTime: tempTasks.at(currentIndex).TaskBurstTime})
         tempTasks.splice(currentIndex, 1);
         }
 
@@ -179,7 +218,8 @@ function CPUSchedulingAlgorithmInput(){
                        finishTime: totalTime,
                        startTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime,
                        waitTime: totalTime - tempTasks.at(currentIndex).TaskBurstTime - tempTasks.at(currentIndex).TaskArrivalTime,
-                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime})
+                       turnAroundTime: totalTime - tempTasks.at(currentIndex).TaskArrivalTime,
+                       burstTime: tempTasks.at(currentIndex).TaskBurstTime} )
         tempTasks.splice(currentIndex, 1);
         }
 
