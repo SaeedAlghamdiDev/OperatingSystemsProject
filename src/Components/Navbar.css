@@ -14,7 +14,7 @@
   width: 100%;
 }
 
-/* LEFT LOGO SECTION */
+
 .navbar-logo {
   width: 80px;
   height: 80px;
@@ -92,4 +92,13 @@
 
 .nav-icon {
   font-size: 18px;
+}
+
+.navbar-logo a {
+  padding: 0;
+  background: transparent;
+}
+
+.navbar-logo a:hover {
+  background: transparent;
 }

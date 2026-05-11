@@ -16,10 +16,12 @@ export function Navbar() {
         </div>
 
         <div className="navbar-logo" title="Logo placeholder">
-          <a href="https://github.com/SaeedAlghamdiDev/OperatingSystemsProject"
+            <a href="https://github.com/SaeedAlghamdiDev/OperatingSystemsProject"
            target="_blank"
           
-           rel="noopener noreferrer"><img src={githublogo} alt="github logo" ></img>
+           rel="noopener noreferrer">
+          <img src={githublogo} alt="github logo" ></img>
+          
            </a>
           
         </div>
