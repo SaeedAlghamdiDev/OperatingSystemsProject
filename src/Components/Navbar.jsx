@@ -10,25 +10,30 @@ export function Navbar() {
   return (
     <nav className="navbar-container">
       <div className="navbar-content">
-        
+
         <div className="navbar-logo" title="Logo placeholder">
-          <img src={pmulogo} alt="PMU Logo"></img>
+          <a href="https://www.pmu.edu.sa"
+            target="_blank"
+
+            rel="noopener noreferrer">
+            <img src={pmulogo} alt="PMU Logo"></img>
+          </a>
         </div>
 
         <div className="navbar-logo" title="Logo placeholder">
-            <a href="https://github.com/SaeedAlghamdiDev/OperatingSystemsProject"
-           target="_blank"
-          
-           rel="noopener noreferrer">
-          <img src={githublogo} alt="github logo" ></img>
-          
-           </a>
-          
+          <a href="https://github.com/SaeedAlghamdiDev/OperatingSystemsProject"
+            target="_blank"
+
+            rel="noopener noreferrer">
+            <img src={githublogo} alt="github logo" ></img>
+
+          </a>
+
         </div>
 
-        
 
-        
+
+
         <ul className="navbar-links">
           <li className="navbar-link">
             <Link to="/" className={isActive("/") ? "active" : ""}>
