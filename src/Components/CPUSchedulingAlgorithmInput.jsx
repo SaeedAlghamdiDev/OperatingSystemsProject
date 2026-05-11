@@ -1,7 +1,7 @@
 import TaskDataInput from "./taskDataInput.jsx";
 import { useEffect } from "react";
 import { useState } from "react";
-import * as utils from '../Js Codes/Formulas.js';
+import * as utils from '../JS Codes/Formulas.js';
 import './CPUScheduling.css';
 
 function CPUSchedulingAlgorithmInput() {
@@ -344,14 +344,14 @@ function CPUSchedulingAlgorithmInput() {
 
     return (
         <div className="cpu-scheduling-container">
-            {/* Header */}
+            
             <div className="cpu-scheduling-header">
                 <h1>CPU Scheduling Simulator</h1>
                 <p>Visualize and analyze different CPU scheduling algorithms</p>
             </div>
 
             <div className="cpu-scheduling-grid">
-                {/* LEFT COLUMN - INPUT SECTION */}
+              
                 <div className="cpu-card">
                     <h2>Task Configuration</h2>
                     
