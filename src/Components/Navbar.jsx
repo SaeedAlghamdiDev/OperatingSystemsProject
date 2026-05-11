@@ -18,7 +18,7 @@ export function Navbar() {
           <a href="https://github.com/SaeedAlghamdiDev/OperatingSystemsProject"
            target="_blank"
           
-           rel="noopener noreferrer"><img src="src\assets\githublogo.png" ></img>
+           rel="noopener noreferrer"><img src="src\assets\githublogo.png" alt="github logo" ></img>
            </a>
           
         </div>
