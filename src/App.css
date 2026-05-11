@@ -4,3 +4,6 @@
   position: fixed;
   flex: 1;
 }
+.memory-block{
+  outline: black;
+}
