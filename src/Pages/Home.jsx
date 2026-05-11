@@ -60,7 +60,7 @@ export function Home() {
                     </div>
                     <div className="student-card">
                         <div className="student-name">Abdullah Almutairi</div>
-                        <div className="student-id">202100239@pmu.edu.sa</div>
+                        <div className="student-id">202201380@pmu.edu.sa</div>
                     </div>
                 </div>
             </section>
