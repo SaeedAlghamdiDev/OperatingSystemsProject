@@ -1,4 +1,5 @@
 import "./Home.css";
+import osgif from "../assets/CPU.gif"
 
 export function Home() {
     return (
@@ -19,7 +20,7 @@ export function Home() {
                 </div>
             </section>
 
-            <img src="src\assets\CPU.gif"></img>
+            <img src={osgif}></img>
 
             
             <header className="home-header">
