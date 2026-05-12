@@ -58,7 +58,7 @@ function GanttChart({ taskData, algorithm }) {
 
             <div className="gantt-header">
 
-                <h3>Execution Timeline</h3>
+                <h3>Gantt Chart: </h3>
 
                 <span className="gantt-algorithm">
                     {algorithm}
