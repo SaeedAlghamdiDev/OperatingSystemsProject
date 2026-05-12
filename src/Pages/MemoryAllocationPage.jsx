@@ -45,7 +45,7 @@ export function MemoryAllocationPage() {
   const addProcess = () => {
     setProcesses([
       ...processes,
-      { id: `P${processes.length + 1}`, size: 100 },
+      { id: `P${processes.length + 1}`, size: 50 },
     ]);
   };
 
@@ -66,14 +66,14 @@ export function MemoryAllocationPage() {
 
   return (
     <div className="memory-allocation-container">
-      {/* Header */}
+     
       <div className="memory-header">
         <h1>Memory Allocation Simulator</h1>
         <p>Analyze how contiguous memory allocation strategies assign processes to memory blocks</p>
       </div>
 
       <div className="memory-grid">
-        {/* LEFT COLUMN - INPUT SECTION */}
+        
         <div className="memory-card">
           <h2>Memory Blocks</h2>
 
@@ -92,7 +92,8 @@ export function MemoryAllocationPage() {
                 <div className="table-col col-size">
                   <input
                     type="number"
-                    min="1"
+                    min="100"
+                    step={50}
                     value={block.size}
                     onChange={(e) => handleBlockSizeChange(index, e.target.value)}
                     className="table-input"
@@ -117,7 +118,7 @@ export function MemoryAllocationPage() {
           </button>
         </div>
 
-        {/* RIGHT COLUMN - PROCESSES SECTION */}
+      
         <div className="memory-card">
           <h2>Processes</h2>
 
@@ -136,7 +137,8 @@ export function MemoryAllocationPage() {
                 <div className="table-col col-size">
                   <input
                     type="number"
-                    min="1"
+                    min="50"
+                    step={50}
                     value={process.size}
                     onChange={(e) => handleProcessSizeChange(index, e.target.value)}
                     className="table-input"
@@ -161,7 +163,7 @@ export function MemoryAllocationPage() {
           </button>
         </div>
 
-        {/* STRATEGY SELECTION */}
+       
         <div className="memory-card strategy-section">
           <h2>Allocation Strategy</h2>
           <div className="strategy-grid">
@@ -196,7 +198,7 @@ export function MemoryAllocationPage() {
           </button>
         </div>
 
-        {/* RESULTS SECTION */}
+     
         {results && (
           <div className="memory-card results-section">
             <h2>Allocation Results</h2>
