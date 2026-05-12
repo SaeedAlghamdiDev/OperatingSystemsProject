@@ -962,3 +962,130 @@
     grid-template-columns: 1fr;
   }
 }
+/* Gantt Chart */
+.gantt-wrapper {
+  margin-bottom: 28px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.gantt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.gantt-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.gantt-algorithm {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.gantt-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+}
+
+.gantt-chart {
+  display: flex;
+  align-items: stretch;
+  min-width: 600px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+}
+
+.gantt-segment {
+  position: relative;
+  min-height: 72px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  background: linear-gradient(
+    135deg,
+    var(--accent),
+    rgba(170, 59, 255, 0.82)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gantt-segment:last-child {
+  border-right: none;
+}
+
+.gantt-segment-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: 0.3px;
+}
+
+.gantt-segment-time {
+  position: absolute;
+  bottom: 8px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: rgba(255,255,255,0.9);
+}
+
+.gantt-time-start {
+  left: 10px;
+}
+
+.gantt-time-end {
+  right: 10px;
+}
+
+@media (max-width: 768px) {
+  .gantt-wrapper {
+    padding: 16px;
+  }
+
+  .gantt-chart {
+    min-width: 520px;
+  }
+
+  .gantt-segment {
+    min-height: 64px;
+  }
+
+  .gantt-segment-label {
+    font-size: 12px;
+  }
+}
+
+/* Idle state */
+.gantt-segment-idle {
+  background: var(--code-bg);
+  border-right: 1px dashed var(--border);
+}
+
+.gantt-segment-idle .gantt-segment-label {
+  color: var(--text);
+  opacity: 0.75;
+}
+
+.gantt-segment-idle .gantt-segment-time {
+  color: var(--text);
+  opacity: 0.7;
+}
