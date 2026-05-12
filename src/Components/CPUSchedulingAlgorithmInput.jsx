@@ -8,10 +8,11 @@ function CPUSchedulingAlgorithmInput() {
 
     const [listOfTasks, setListOfTasks] = useState([]);
     const [arrivalTime, setArrivalTime] = useState(0);
-    const [burstTime, setBurstTime] = useState(0);
-    const [quantumTime, setQuantumTime] = useState(0);
+    const [burstTime, setBurstTime] = useState(1);
+    const [quantumTime, setQuantumTime] = useState(1);
     const [taskData, setTaskData] = useState([]);
     const [averageWaitTime, setAverageWaitTime] = useState(0);
+    const [averageTurnAroundTime, setAverageTurnAroundTime] = useState(0);
     const [currentAlgorithm, setCurrentAlgorithm] = useState('');
 
     const addTask = () => {
@@ -23,6 +24,8 @@ function CPUSchedulingAlgorithmInput() {
         };
 
         setListOfTasks(l => [...l, newTask]);
+
+
 
 
 
@@ -50,6 +53,7 @@ function CPUSchedulingAlgorithmInput() {
         let n = tempTasks.length;
 
         let averageWaitTime = 0;
+        let averageTurnAroundTime = 0;
         let currentIndex;
 
         while (completedTasks < n) {
@@ -100,9 +104,11 @@ function CPUSchedulingAlgorithmInput() {
 
         for (let i = 0; i < tempTaskData.length; i++) {
             averageWaitTime += tempTaskData[i].waitTime / n;
+            averageTurnAroundTime += tempTaskData[i].turnAroundTime / n;
         }
 
         setAverageWaitTime(averageWaitTime);
+        setAverageTurnAroundTime(averageTurnAroundTime);
         setTaskData(tempTaskData);
     };
 
@@ -119,13 +125,14 @@ function CPUSchedulingAlgorithmInput() {
         let totalTime = 0;
         let tempTaskData = [];
         let averageWaitTime = 0;
+        let averageTurnAroundTime = 0;
 
-        // sort by arrival time, then by TaskName (tie-breaker)
+
         tempTasks.sort((a, b) =>
             a.TaskArrivalTime - b.TaskArrivalTime || a.TaskName - b.TaskName
         );
 
-        let i = 0; // pointer for arrivals
+        let i = 0;
 
         while (readyQueue.length > 0 || i < tempTasks.length) {
 
@@ -138,18 +145,18 @@ function CPUSchedulingAlgorithmInput() {
 
             let current = readyQueue.shift();
 
-            // execute for quantum or remaining time
+
             let execTime = Math.min(current.remainingTime, quantumTime);
             totalTime += execTime;
             current.remainingTime -= execTime;
 
-            // add newly arrived tasks FIRST
+
             while (i < tempTasks.length && tempTasks[i].TaskArrivalTime <= totalTime) {
                 readyQueue.push(tempTasks[i]);
                 i++;
             }
 
-            // if not finished, requeue
+
             if (current.remainingTime > 0) {
                 readyQueue.push(current);
             } else {
@@ -169,14 +176,16 @@ function CPUSchedulingAlgorithmInput() {
             }
         }
 
-        // sort back by task index for display
+
         tempTaskData.sort((a, b) => a.taskIndex - b.taskIndex);
 
         for (let j = 0; j < tempTaskData.length; j++) {
             averageWaitTime += tempTaskData[j].waitTime / tempTaskData.length;
+            averageTurnAroundTime += tempTaskData[j].turnAroundTime / tempTaskData.length;
         }
 
         setAverageWaitTime(averageWaitTime);
+        setAverageTurnAroundTime(averageTurnAroundTime);
         setTaskData(tempTaskData);
     }
 
@@ -187,6 +196,7 @@ function CPUSchedulingAlgorithmInput() {
         let currentIndex;
 
         let averageWaitTime = 0;
+        let averageTurnAroundTime = 0;
 
 
 
@@ -214,11 +224,15 @@ function CPUSchedulingAlgorithmInput() {
 
         for (let i = 0; i < tempTaskData.length; i++) {
             averageWaitTime += tempTaskData.at(i).waitTime / tempTaskData.length;
+            averageTurnAroundTime += tempTaskData.at(i).turnAroundTime / tempTaskData.length;
         }
+
         setAverageWaitTime(averageWaitTime);
+        setAverageTurnAroundTime(averageTurnAroundTime);
         setTaskData(tempTaskData);
 
     }
+
     function calculateFCFS() {
 
         console.log(utils.whoCameFirst);
@@ -229,6 +243,7 @@ function CPUSchedulingAlgorithmInput() {
         let currentIndex;
 
         let averageWaitTime = 0;
+        let averageTurnAroundTime = 0;
 
 
         while (tempTasks.length > 0) {
@@ -255,8 +270,11 @@ function CPUSchedulingAlgorithmInput() {
 
         for (let i = 0; i < tempTaskData.length; i++) {
             averageWaitTime += tempTaskData.at(i).waitTime / tempTaskData.length;
+            averageTurnAroundTime += tempTaskData.at(i).turnAroundTime / tempTaskData.length;
         }
+
         setAverageWaitTime(averageWaitTime);
+        setAverageTurnAroundTime(averageTurnAroundTime);
         setTaskData(tempTaskData);
 
     }
@@ -266,6 +284,7 @@ function CPUSchedulingAlgorithmInput() {
 
         setListOfTasks(l => l.filter((_, i) => i !== index));
     }
+
     const handleArrivalTimeChange = (event) => {
 
         if (event.target.value < 0) {
@@ -279,6 +298,7 @@ function CPUSchedulingAlgorithmInput() {
 
 
     }
+
     const handleBurstTimeChange = (event) => {
 
 
@@ -293,6 +313,7 @@ function CPUSchedulingAlgorithmInput() {
 
 
     }
+
     const handleQuantumTimeChange = (event) => {
 
         if (event.target.value < 0) {
@@ -327,7 +348,7 @@ function CPUSchedulingAlgorithmInput() {
 
     useEffect(() => {
         if (listOfTasks.length === 0) return;
-        
+
         if (currentAlgorithm === 'FCFS') {
             calculateFCFS();
         } else if (currentAlgorithm === 'nSJF') {
@@ -344,26 +365,26 @@ function CPUSchedulingAlgorithmInput() {
 
     return (
         <div className="cpu-scheduling-container">
-            
+
             <div className="cpu-scheduling-header">
                 <h1>CPU Scheduling Simulator</h1>
                 <p>Visualize and analyze different CPU scheduling algorithms</p>
             </div>
 
             <div className="cpu-scheduling-grid">
-              
+
                 <div className="cpu-card">
                     <h2>Task Configuration</h2>
-                    
+
                     <div className="input-section">
                         <div className="form-group">
                             <label>
                                 Arrival Time
                                 <div className="label-hint">(Time when task enters system)</div>
                             </label>
-                            <input 
+                            <input
                                 className="cpu-input"
-                                type="number" 
+                                type="number"
                                 min="0"
                                 max="1000"
                                 value={arrivalTime}
@@ -377,9 +398,9 @@ function CPUSchedulingAlgorithmInput() {
                                 Burst Time
                                 <div className="label-hint">(CPU processing time required)</div>
                             </label>
-                            <input 
+                            <input
                                 className="cpu-input"
-                                type="number" 
+                                type="number"
                                 min="1"
                                 max="1000"
                                 value={burstTime}
@@ -388,7 +409,7 @@ function CPUSchedulingAlgorithmInput() {
                             />
                         </div>
 
-                        <button 
+                        <button
                             className="cpu-button cpu-button-primary"
                             onClick={addTask}
                         >
@@ -404,10 +425,10 @@ function CPUSchedulingAlgorithmInput() {
                                 Quantum Time (Round Robin)
                                 <div className="label-hint">(Time slice per task)</div>
                             </label>
-                            <input 
+                            <input
                                 className="cpu-input"
-                                type="number" 
-                                min="0"
+                                type="number"
+                                min="1"
                                 max="1000"
                                 value={quantumTime}
                                 onChange={handleQuantumTimeChange}
@@ -420,7 +441,7 @@ function CPUSchedulingAlgorithmInput() {
                 {/* RIGHT COLUMN - TASK LIST */}
                 <div className="cpu-card">
                     <h2>Active Tasks</h2>
-                    
+
                     {listOfTasks.length === 0 ? (
                         <div className="task-list-container">
                             <div className="task-list-empty">
@@ -431,8 +452,8 @@ function CPUSchedulingAlgorithmInput() {
                         <div className="task-list-container">
                             <ul className="task-list">
                                 {listOfTasks.map((task, index) => (
-                                    <li 
-                                        key={index} 
+                                    <li
+                                        key={index}
                                         className="task-item"
                                         onClick={() => removeTask(index)}
                                     >
@@ -456,25 +477,25 @@ function CPUSchedulingAlgorithmInput() {
                 <div className="cpu-card algorithms-section">
                     <h2>Select Algorithm</h2>
                     <div className="algorithms-grid">
-                        <button 
+                        <button
                             className={`cpu-button ${currentAlgorithm === 'FCFS' ? 'cpu-button-primary' : ''}`}
                             onClick={() => setCurrentAlgorithm('FCFS')}
                         >
                             FCFS
                         </button>
-                        <button 
+                        <button
                             className={`cpu-button ${currentAlgorithm === 'nSJF' ? 'cpu-button-primary' : ''}`}
                             onClick={() => setCurrentAlgorithm('nSJF')}
                         >
                             nSJF
                         </button>
-                        <button 
+                        <button
                             className={`cpu-button ${currentAlgorithm === 'RR' ? 'cpu-button-primary' : ''}`}
                             onClick={() => setCurrentAlgorithm('RR')}
                         >
                             Round Robin
                         </button>
-                        <button 
+                        <button
                             className={`cpu-button ${currentAlgorithm === 'SRTF' ? 'cpu-button-primary' : ''}`}
                             onClick={() => setCurrentAlgorithm('SRTF')}
                         >
@@ -498,13 +519,25 @@ function CPUSchedulingAlgorithmInput() {
                                 </div>
                             )}
 
-                            <div className="average-wait-time">
-                                <div className="average-wait-time-label">Average Wait Time</div>
-                                <div>
-                                    <span className="average-wait-time-value">
-                                        {averageWaitTime.toFixed(2)}
-                                    </span>
-                                    <span className="average-wait-time-unit">seconds</span>
+                            <div className="average-metrics-grid">
+                                <div className="average-wait-time">
+                                    <div className="average-wait-time-label">Average Wait Time</div>
+                                    <div>
+                                        <span className="average-wait-time-value">
+                                            {averageWaitTime.toFixed(2)}
+                                        </span>
+                                        <span className="average-wait-time-unit">seconds</span>
+                                    </div>
+                                </div>
+
+                                <div className="average-wait-time">
+                                    <div className="average-wait-time-label">Average Turn-Around Time</div>
+                                    <div>
+                                        <span className="average-wait-time-value">
+                                            {averageTurnAroundTime.toFixed(2)}
+                                        </span>
+                                        <span className="average-wait-time-unit">seconds</span>
+                                    </div>
                                 </div>
                             </div>
 

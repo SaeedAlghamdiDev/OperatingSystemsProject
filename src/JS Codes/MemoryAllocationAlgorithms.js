@@ -1,15 +1,4 @@
-/**
- * Memory Allocation Algorithms Module
- * Implements First Fit, Best Fit, and Worst Fit strategies for contiguous memory allocation
- */
 
-/**
- * Allocate processes to memory blocks using the specified strategy
- * @param {string} strategy - Allocation strategy: "first", "best", or "worst"
- * @param {Array} blocks - Array of memory blocks with format: {id, size}
- * @param {Array} processes - Array of processes with format: {id, size}
- * @returns {Array} Allocation results for each process
- */
 export function allocateMemory(strategy, blocks, processes) {
   // Create a copy of available blocks to track remaining space
   let availableBlocks = blocks.map((b) => ({ ...b }));

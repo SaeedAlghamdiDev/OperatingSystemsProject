@@ -1,15 +1,4 @@
-/**
- * Page Replacement Algorithms Module
- * Implements FIFO, LRU, and Optimal page replacement strategies
- */
 
-/**
- * FIFO (First In First Out) Page Replacement Algorithm
- * Removes the oldest page when memory is full
- * @param {number} frameCount - Number of frames in memory
- * @param {Array} referenceString - Array of page references
- * @returns {Object} Result object with faults, hits, and step-by-step trace
- */
 export function runFIFO(frameCount, referenceString) {
   let memory = [];
   let faults = 0;
@@ -40,13 +29,7 @@ export function runFIFO(frameCount, referenceString) {
   };
 }
 
-/**
- * LRU (Least Recently Used) Page Replacement Algorithm
- * Removes the page that hasn't been used for the longest time
- * @param {number} frameCount - Number of frames in memory
- * @param {Array} referenceString - Array of page references
- * @returns {Object} Result object with faults, hits, and step-by-step trace
- */
+
 export function runLRU(frameCount, referenceString) {
   let memory = [];
   let faults = 0;
@@ -88,13 +71,7 @@ export function runLRU(frameCount, referenceString) {
   };
 }
 
-/**
- * Optimal Page Replacement Algorithm
- * Removes the page that will not be used for the longest time in the future
- * @param {number} frameCount - Number of frames in memory
- * @param {Array} referenceString - Array of page references
- * @returns {Object} Result object with faults, hits, and step-by-step trace
- */
+
 export function runOptimal(frameCount, referenceString) {
   let memory = [];
   let faults = 0;
