@@ -385,6 +385,14 @@ gy-section {
   border-color: var(--accent);
 }
 
+.memory-button.secondary + .memory-button.primary {
+  margin-top: 16px;
+}
+
+.add-process-button {
+  margin-bottom: 16px;
+}
+
 .memory-button.primary:hover {
   background: rgba(170, 59, 255, 0.8);
 }

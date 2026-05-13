@@ -211,9 +211,10 @@ export function MemoryAllocationPage() {
             ))}
           </div>
 
-          <button className="memory-button secondary" onClick={addProcess}>
+          <button className="memory-button secondary add-process-button" onClick={addProcess}>
             + Add Process
           </button>
+          
           <button className="memory-button primary" onClick={handleCalculate}>
             Calculate Allocation
           </button>

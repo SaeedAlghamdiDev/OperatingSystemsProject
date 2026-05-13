@@ -11,7 +11,7 @@ export function runFIFO(frameCount, referenceString) {
       isFault = true;
       faults++;
 
-      // If memory is full, remove the oldest (first) page
+    
       if (memory.length >= frameCount) {
         memory.shift();
       }
@@ -44,8 +44,7 @@ export function runLRU(frameCount, referenceString) {
       faults++;
 
       if (memory.length >= frameCount) {
-        // Find the least recently used page
-        // (the one that appeared earliest in the reference string)
+       
         let lruIndex = memory.reduce((minIdx, currentPage, currentIdx) => {
           let lastUseOfCurrent = referenceString.slice(0, i).lastIndexOf(currentPage);
           let lastUseOfMin = referenceString
@@ -95,10 +94,10 @@ export function runOptimal(frameCount, referenceString) {
           };
         });
 
-        // Sort by next use index (descending) to find the one used furthest away
+       
         futureUses.sort((a, b) => b.nextUseIndex - a.nextUseIndex);
 
-        // Remove the page that will be used furthest in the future
+        
         let pageToRemove = futureUses[0].page;
         memory.splice(memory.indexOf(pageToRemove), 1);
       }
