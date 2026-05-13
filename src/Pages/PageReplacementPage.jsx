@@ -12,6 +12,8 @@ export function PageReplacementPage() {
   const [referenceString, setReferenceString] = useState("");
   const [results, setResults] = useState(null);
 
+  const sanitizeReferenceString = (value) => value.replace(/[^0-9\s]/g, "");
+
   const handleCalculate = () => {
     // Parse reference string into array of numbers
     const refs = referenceString
@@ -54,7 +56,7 @@ export function PageReplacementPage() {
 
       <div className="page-grid">
         {/* INPUT SECTION */}
-        <div className="page-card">
+        <div className="page-card config-card">
           <h2>Configuration</h2>
 
           <div className="input-section">
@@ -81,7 +83,7 @@ export function PageReplacementPage() {
               </label>
               <textarea
                 value={referenceString}
-                onChange={(e) => setReferenceString(e.target.value)}
+                onChange={(e) => setReferenceString(sanitizeReferenceString(e.target.value))}
                 className="page-textarea"
                 placeholder="Example: 1 2 3 4 5"
                 rows="4"
@@ -89,7 +91,11 @@ export function PageReplacementPage() {
             </div>
 
             <div className="button-group">
-              <button className="page-button primary" onClick={handleCalculate}>
+              <button
+                className="page-button primary"
+                onClick={handleCalculate}
+                disabled={referenceString.trim().length === 0}
+              >
                 Calculate All Algorithms
               </button>
               <button className="page-button secondary" onClick={handleReset}>
@@ -103,53 +109,6 @@ export function PageReplacementPage() {
         {results && (
           <>
             {/* SUMMARY TABLE */}
-            <div className="page-card results-summary-card">
-              <h2>Summary Comparison</h2>
-
-              <div className="summary-table-wrapper">
-                <div className="summary-header">
-                  <div className="summary-col col-algo">Algorithm</div>
-                  <div className="summary-col col-faults">Page Faults</div>
-                  <div className="summary-col col-hits">Hits</div>
-                  <div className="summary-col col-ratio">Hit Ratio</div>
-                </div>
-
-                {[
-                  ["FIFO", results.fifo],
-                  ["LRU", results.lru],
-                  ["Optimal", results.optimal],
-                ].map(([name, data]) => {
-                  const hitRatio = (
-                    (data.hits / results.refs.length) *
-                    100
-                  ).toFixed(1);
-                  const missRatio = (
-                    (data.faults / results.refs.length) *
-                    100
-                  ).toFixed(1);
-
-                  return (
-                    <div key={name} className="summary-row">
-                      <div className="summary-col col-algo">
-                        <span className="algo-badge">{name}</span>
-                      </div>
-                      <div className="summary-col col-faults">
-                        <span className="fault-value">{data.faults}</span>
-                      </div>
-                      <div className="summary-col col-hits">
-                        <span className="hit-value">{data.hits}</span>
-                      </div>
-                      <div className="summary-col col-ratio">
-                        <span className="ratio-primary">{hitRatio}%</span>
-                        <span className="ratio-secondary">{missRatio}%</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* DETAILED ALGORITHM RESULTS */}
             {[
               ["FIFO", results.fifo],
               ["LRU", results.lru],
@@ -227,6 +186,52 @@ export function PageReplacementPage() {
                 </div>
               </div>
             ))}
+
+            <div className="page-card results-summary-card">
+              <h2>Summary Comparison</h2>
+
+              <div className="summary-table-wrapper">
+                <div className="summary-header">
+                  <div className="summary-col col-algo">Algorithm</div>
+                  <div className="summary-col col-faults">Page Faults</div>
+                  <div className="summary-col col-hits">Hits</div>
+                  <div className="summary-col col-ratio">Hit Ratio</div>
+                </div>
+
+                {[
+                  ["FIFO", results.fifo],
+                  ["LRU", results.lru],
+                  ["Optimal", results.optimal],
+                ].map(([name, data]) => {
+                  const hitRatio = (
+                    (data.hits / results.refs.length) *
+                    100
+                  ).toFixed(1);
+                  const missRatio = (
+                    (data.faults / results.refs.length) *
+                    100
+                  ).toFixed(1);
+
+                  return (
+                    <div key={name} className="summary-row">
+                      <div className="summary-col col-algo">
+                        <span className="algo-badge">{name}</span>
+                      </div>
+                      <div className="summary-col col-faults">
+                        <span className="fault-value">{data.faults}</span>
+                      </div>
+                      <div className="summary-col col-hits">
+                        <span className="hit-value">{data.hits}</span>
+                      </div>
+                      <div className="summary-col col-ratio">
+                        <span className="ratio-primary">{hitRatio}%</span>
+                        <span className="ratio-secondary">{missRatio}%</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </>
         )}
       </div>

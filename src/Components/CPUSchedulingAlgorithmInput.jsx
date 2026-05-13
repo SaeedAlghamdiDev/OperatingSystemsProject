@@ -7,7 +7,11 @@ import './CPUScheduling.css';
 
 function CPUSchedulingAlgorithmInput() {
 
-    const [listOfTasks, setListOfTasks] = useState([]);
+    const [listOfTasks, setListOfTasks] = useState([
+        { TaskName: 0, TaskArrivalTime: 0, TaskBurstTime: 4 },
+        { TaskName: 1, TaskArrivalTime: 2, TaskBurstTime: 3 },
+        { TaskName: 2, TaskArrivalTime: 4, TaskBurstTime: 2 },
+    ]);
     const [arrivalTime, setArrivalTime] = useState(0);
     const [burstTime, setBurstTime] = useState(1);
     const [quantumTime, setQuantumTime] = useState(1);
@@ -566,7 +570,7 @@ function CPUSchedulingAlgorithmInput() {
                                 onChange={
                                     handleArrivalTimeChange
                                 }
-                                placeholder="Enter arrival time in seconds"
+                                placeholder="Enter arrival time in milliseconds"
                             />
 
                         </div>
@@ -591,7 +595,7 @@ function CPUSchedulingAlgorithmInput() {
                                 onChange={
                                     handleBurstTimeChange
                                 }
-                                placeholder="Enter burst time in seconds"
+                                placeholder="Enter burst time in milliseconds"
                             />
 
                         </div>
@@ -679,11 +683,11 @@ function CPUSchedulingAlgorithmInput() {
                                                 <span className="task-item-times">
                                                     Arrival:
                                                     {' '}
-                                                    {task.TaskArrivalTime}s
+                                                    {task.TaskArrivalTime}ms
                                                     {' | '}
                                                     Burst:
                                                     {' '}
-                                                    {task.TaskBurstTime}s
+                                                    {task.TaskBurstTime}ms
                                                 </span>
 
                                             </div>
@@ -804,7 +808,7 @@ function CPUSchedulingAlgorithmInput() {
                                         </span>
 
                                         <span className="average-wait-time-unit">
-                                            seconds
+                                            milliseconds
                                         </span>
 
                                     </div>
@@ -824,7 +828,7 @@ function CPUSchedulingAlgorithmInput() {
                                         </span>
 
                                         <span className="average-wait-time-unit">
-                                            seconds
+                                            milliseconds
                                         </span>
 
                                     </div>
@@ -864,7 +868,7 @@ function CPUSchedulingAlgorithmInput() {
                                                 </div>
 
                                                 <div className="metric-value">
-                                                    {task.arrivalTime}s
+                                                    {task.arrivalTime}ms
                                                 </div>
 
                                             </div>
@@ -876,7 +880,7 @@ function CPUSchedulingAlgorithmInput() {
                                                 </div>
 
                                                 <div className="metric-value">
-                                                    {task.burstTime}s
+                                                    {task.burstTime}ms
                                                 </div>
 
                                             </div>
@@ -890,7 +894,7 @@ function CPUSchedulingAlgorithmInput() {
                                                     </div>
 
                                                     <div className="metric-value">
-                                                        {task.startTime}s
+                                                        {task.startTime}ms
                                                     </div>
 
                                                 </div>
@@ -904,7 +908,7 @@ function CPUSchedulingAlgorithmInput() {
                                                 </div>
 
                                                 <div className="metric-value">
-                                                    {task.finishTime}s
+                                                    {task.finishTime}ms
                                                 </div>
 
                                             </div>
@@ -916,7 +920,7 @@ function CPUSchedulingAlgorithmInput() {
                                                 </div>
 
                                                 <div className="metric-value">
-                                                    {task.waitTime}s
+                                                    {task.waitTime}ms
                                                 </div>
 
                                             </div>
@@ -928,7 +932,7 @@ function CPUSchedulingAlgorithmInput() {
                                                 </div>
 
                                                 <div className="metric-value">
-                                                    {task.turnAroundTime}s
+                                                    {task.turnAroundTime}ms
                                                 </div>
 
                                             </div>

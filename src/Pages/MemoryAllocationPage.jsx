@@ -3,19 +3,25 @@ import { allocateMemory } from "../JS Codes/MemoryAllocationAlgorithms";
 import "./MemoryAllocation.css";
 
 export function MemoryAllocationPage() {
-  const [blocks, setBlocks] = useState([]);
+  const [blocks, setBlocks] = useState([
+    { id: "B1", size: 300 },
+    { id: "B2", size: 200 },
+    { id: "B3", size: 450 },
+  ]);
 
-  const [processes, setProcesses] = useState([]);
+  const [processes, setProcesses] = useState([
+    { id: "P1", size: 150 },
+    { id: "P2", size: 220 },
+    { id: "P3", size: 100 },
+  ]);
 
-  const [strategy, setStrategy] = useState("first");
-  const [results, setResults] = useState(null);
+  const [comparisonRows, setComparisonRows] = useState(null);
 
   // Block handlers
   const handleBlockSizeChange = (index, newSize) => {
     const updated = [...blocks];
     updated[index] = { ...updated[index], size: Math.max(1, Number(newSize)) };
     setBlocks(updated);
-    setResults(null);
   };
 
   const addBlock = () => {
@@ -31,7 +37,6 @@ export function MemoryAllocationPage() {
       .filter((_, i) => i !== index)
       .map((b, i) => ({ ...b, id: `B${i + 1}` }));
     setBlocks(updated);
-    setResults(null);
   };
 
   // Process handlers
@@ -39,7 +44,6 @@ export function MemoryAllocationPage() {
     const updated = [...processes];
     updated[index] = { ...updated[index], size: Math.max(1, Number(newSize)) };
     setProcesses(updated);
-    setResults(null);
   };
 
   const addProcess = () => {
@@ -55,13 +59,62 @@ export function MemoryAllocationPage() {
       .filter((_, i) => i !== index)
       .map((p, i) => ({ ...p, id: `P${i + 1}` }));
     setProcesses(updated);
-    setResults(null);
   };
 
-  // Calculate allocation
+  const buildAllocationMap = (allocations) =>
+    allocations.reduce((map, result) => {
+      if (result.allocatedBlock && result.allocatedBlock !== "Not Allocated") {
+        map[result.allocatedBlock] = map[result.allocatedBlock] || [];
+        map[result.allocatedBlock].push({
+          processId: result.processId,
+          remainingSpace: result.remainingSpace,
+        });
+      }
+      return map;
+    }, {});
+
   const handleCalculate = () => {
-    const allocationResults = allocateMemory(strategy, blocks, processes);
-    setResults(allocationResults);
+    const firstResult = allocateMemory("first", blocks, processes);
+    const bestResult = allocateMemory("best", blocks, processes);
+    const worstResult = allocateMemory("worst", blocks, processes);
+
+    const buildAllocations = (allocations) =>
+      allocations.reduce((map, result) => {
+        if (result.allocatedBlock && result.allocatedBlock !== "Not Allocated") {
+          map[result.allocatedBlock] = map[result.allocatedBlock] || [];
+          map[result.allocatedBlock].push({
+            processId: result.processId,
+            remainingSpace: result.remainingSpace,
+          });
+        }
+        return map;
+      }, {});
+
+    const buildUnallocated = (allocations) =>
+      allocations
+        .filter((result) => result.allocatedBlock === "Not Allocated")
+        .map((result) => result.processId);
+
+    const firstMap = buildAllocations(firstResult);
+    const bestMap = buildAllocations(bestResult);
+    const worstMap = buildAllocations(worstResult);
+
+    const rows = blocks.map((block) => ({
+      id: block.id,
+      size: block.size,
+      first: firstMap[block.id] || [],
+      best: bestMap[block.id] || [],
+      worst: worstMap[block.id] || [],
+    }));
+
+    setComparisonRows({
+      rows,
+      unallocated: {
+        first: buildUnallocated(firstResult),
+        best: buildUnallocated(bestResult),
+        worst: buildUnallocated(worstResult),
+      },
+    });
   };
 
   return (
@@ -80,7 +133,7 @@ export function MemoryAllocationPage() {
           <div className="blocks-table-wrapper">
             <div className="table-header">
               <div className="table-col col-label">Block ID</div>
-              <div className="table-col col-size">Size (KB)</div>
+              <div className="table-col col-size">Size (bytes)</div>
               <div className="table-col col-action"></div>
             </div>
 
@@ -97,7 +150,7 @@ export function MemoryAllocationPage() {
                     value={block.size}
                     onChange={(e) => handleBlockSizeChange(index, e.target.value)}
                     className="table-input"
-                    placeholder="Size in KB"
+                    placeholder="Size in bytes"
                   />
                 </div>
                 <div className="table-col col-action">
@@ -125,7 +178,7 @@ export function MemoryAllocationPage() {
           <div className="blocks-table-wrapper">
             <div className="table-header">
               <div className="table-col col-label">Process ID</div>
-              <div className="table-col col-size">Size (KB)</div>
+              <div className="table-col col-size">Size (bytes)</div>
               <div className="table-col col-action"></div>
             </div>
 
@@ -142,7 +195,7 @@ export function MemoryAllocationPage() {
                     value={process.size}
                     onChange={(e) => handleProcessSizeChange(index, e.target.value)}
                     className="table-input"
-                    placeholder="Size in KB"
+                    placeholder="Size in bytes"
                   />
                 </div>
                 <div className="table-col col-action">
@@ -161,111 +214,69 @@ export function MemoryAllocationPage() {
           <button className="memory-button secondary" onClick={addProcess}>
             + Add Process
           </button>
-        </div>
-
-       
-        <div className="memory-card strategy-section">
-          <h2>Allocation Strategy</h2>
-          <div className="strategy-grid">
-            {[
-              ["first", "First Fit", "Allocates to the first block that fits"],
-              ["best", "Best Fit", "Allocates to the smallest suitable block"],
-              ["worst", "Worst Fit", "Allocates to the largest available block"],
-            ].map(([value, label, description]) => (
-              <div key={value} className="strategy-option">
-                <input
-                  type="radio"
-                  id={`strategy-${value}`}
-                  name="strategy"
-                  value={value}
-                  checked={strategy === value}
-                  onChange={(e) => {
-                    setStrategy(e.target.value);
-                    setResults(null);
-                  }}
-                  className="strategy-radio"
-                />
-                <label htmlFor={`strategy-${value}`} className="strategy-label">
-                  <div className="strategy-title">{label}</div>
-                  <div className="strategy-desc">{description}</div>
-                </label>
-              </div>
-            ))}
-          </div>
-
           <button className="memory-button primary" onClick={handleCalculate}>
             Calculate Allocation
           </button>
         </div>
 
-     
-        {results && (
+        {comparisonRows && (
           <div className="memory-card results-section">
-            <h2>Allocation Results</h2>
+            <h2>Allocation Comparison</h2>
 
-            <div className="strategy-badge">
-              Strategy: {strategy === "first" ? "First Fit" : strategy === "best" ? "Best Fit" : "Worst Fit"}
-            </div>
-
-            <div className="results-table-wrapper">
-              <div className="results-header">
-                <div className="results-col col-process">Process</div>
-                <div className="results-col col-size">Process Size</div>
-                <div className="results-col col-block">Allocated Block</div>
-                <div className="results-col col-remaining">Remaining Space</div>
+            <div className="results-table-wrapper compare-results-wrapper">
+              <div className="compare-table-header">
+                <div className="results-col col-label">Block ID</div>
+                <div className="results-col col-size">Block Size</div>
+                <div className="results-col col-block">First Fit</div>
+                <div className="results-col col-block">Best Fit</div>
+                <div className="results-col col-block">Worst Fit</div>
               </div>
 
-              {results.map((result, index) => {
-                const isUnallocated = result.allocatedBlock === "Not Allocated";
-                return (
-                  <div
-                    key={index}
-                    className={`results-row ${isUnallocated ? "unallocated" : "allocated"}`}
-                  >
-                    <div className="results-col col-process">
-                      <span className="result-badge">{result.processId}</span>
-                    </div>
-                    <div className="results-col col-size">
-                      {result.processSize} KB
-                    </div>
-                    <div className="results-col col-block">
-                      {isUnallocated ? (
-                        <span className="unallocated-badge">Not Allocated</span>
+              {comparisonRows.rows.map((row) => (
+                <div key={row.id} className="compare-table-row">
+                  <div className="results-col col-label">
+                    <span className="block-badge">{row.id}</span>
+                  </div>
+                  <div className="results-col col-size">
+                    {row.size} bytes
+                  </div>
+                  {['first', 'best', 'worst'].map((strategy) => {
+                    const allocation = row[strategy];
+                    const isFree = allocation.length === 0;
+                    const labelText = isFree
+                      ? 'Free'
+                      : allocation.map((item) => item.processId).join(', ');
+                    return (
+                      <div key={strategy} className="results-col col-block">
+                        {isFree ? (
+                          <span className="free-badge">Free</span>
+                        ) : (
+                          <span className="allocated-badge">{labelText}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+
+              <div className="compare-table-row compare-table-footer">
+                <div className="results-col col-label">
+                  <span className="result-badge">Not Allocated</span>
+                </div>
+                <div className="results-col col-size"></div>
+                {['first', 'best', 'worst'].map((strategy) => {
+                  const missing = comparisonRows.unallocated[strategy];
+                  const labelText = missing.length === 0 ? 'None' : missing.join(', ');
+                  return (
+                    <div key={strategy} className="results-col col-block">
+                      {missing.length === 0 ? (
+                        <span className="free-badge">None</span>
                       ) : (
-                        <span className="allocated-badge">{result.allocatedBlock}</span>
+                        <span className="unallocated-badge">{labelText}</span>
                       )}
                     </div>
-                    <div className="results-col col-remaining">
-                      {result.remainingSpace === "-"
-                        ? "-"
-                        : `${result.remainingSpace} KB`}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            
-            <div className="results-summary">
-              <div className="summary-stat">
-                <div className="stat-label">Total Blocks</div>
-                <div className="stat-value">{blocks.length}</div>
-              </div>
-              <div className="summary-stat">
-                <div className="stat-label">Total Processes</div>
-                <div className="stat-value">{processes.length}</div>
-              </div>
-              <div className="summary-stat">
-                <div className="stat-label">Allocated Processes</div>
-                <div className="stat-value">
-                  {results.filter((r) => r.allocatedBlock !== "Not Allocated").length}
-                </div>
-              </div>
-              <div className="summary-stat">
-                <div className="stat-label">Failed Allocations</div>
-                <div className="stat-value">
-                  {results.filter((r) => r.allocatedBlock === "Not Allocated").length}
-                </div>
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -42,17 +42,17 @@ export function Navbar() {
           </li>
           <li className="navbar-link">
             <Link to="/CPUSchedule" className={isActive("/CPUSchedule") ? "active" : ""}>
-              <span>CPU</span>
+              <span>CPU Scheduler</span>
             </Link>
           </li>
           <li className="navbar-link">
             <Link to="/Memory" className={isActive("/Memory") ? "active" : ""}>
-              <span>Memory</span>
+              <span>Memory Allocator</span>
             </Link>
           </li>
           <li className="navbar-link">
             <Link to="/PageReplacement" className={isActive("/PageReplacement") ? "active" : ""}>
-              <span>Pages</span>
+              <span>Page Replacement</span>
             </Link>
           </li>
         </ul>

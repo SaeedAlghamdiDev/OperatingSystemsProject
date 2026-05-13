@@ -1,21 +1,21 @@
 
 export function allocateMemory(strategy, blocks, processes) {
-  // Create a copy of available blocks to track remaining space
-  let availableBlocks = blocks.map((b) => ({ ...b }));
+  // Create a copy of available blocks to track allocation status
+  let availableBlocks = blocks.map((b) => ({ ...b, allocated: false }));
 
   return processes.map((process) => {
     let selectedBlockIndex = -1;
 
     if (strategy === "first") {
-      // First Fit: Allocate to the first block that fits
+      // First Fit: Allocate to the first unused block that fits
       selectedBlockIndex = availableBlocks.findIndex(
-        (b) => b.size >= process.size
+        (b) => !b.allocated && b.size >= process.size
       );
     } else if (strategy === "best") {
-      // Best Fit: Allocate to the smallest block that fits
+      // Best Fit: Allocate to the smallest unused block that fits
       let fittingBlocks = availableBlocks
         .map((b, i) => ({ ...b, index: i }))
-        .filter((b) => b.size >= process.size);
+        .filter((b) => !b.allocated && b.size >= process.size);
 
       if (fittingBlocks.length > 0) {
         const best = fittingBlocks.reduce((prev, curr) =>
@@ -24,10 +24,10 @@ export function allocateMemory(strategy, blocks, processes) {
         selectedBlockIndex = best.index;
       }
     } else if (strategy === "worst") {
-      // Worst Fit: Allocate to the largest block that fits
+      // Worst Fit: Allocate to the largest unused block that fits
       let fittingBlocks = availableBlocks
         .map((b, i) => ({ ...b, index: i }))
-        .filter((b) => b.size >= process.size);
+        .filter((b) => !b.allocated && b.size >= process.size);
 
       if (fittingBlocks.length > 0) {
         const worst = fittingBlocks.reduce((prev, curr) =>
@@ -47,10 +47,15 @@ export function allocateMemory(strategy, blocks, processes) {
       };
     }
 
-    // Calculate remaining space and update block
-    const remainingSpace = availableBlocks[selectedBlockIndex].size - process.size;
-    const allocatedBlockId = availableBlocks[selectedBlockIndex].id;
-    availableBlocks[selectedBlockIndex].size = remainingSpace;
+    // Allocate the block and record leftover space for display
+    const block = availableBlocks[selectedBlockIndex];
+    const remainingSpace = block.size - process.size;
+    const allocatedBlockId = block.id;
+    availableBlocks[selectedBlockIndex] = {
+      ...block,
+      allocated: true,
+      remainingSpace,
+    };
 
     return {
       processId: process.id,
